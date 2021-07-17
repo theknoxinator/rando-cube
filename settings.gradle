@@ -1,0 +1,2 @@
+rootProject.name = 'RandoCube'
+include 'rc-backend'
