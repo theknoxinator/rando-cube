@@ -1,6 +1,0 @@
-net/christopherknox/rc/Hello.java
- net.christopherknox.rc.Hello
-net/christopherknox/rc/HelloApplication.java
- net.christopherknox.rc.HelloApplication
-net/christopherknox/rc/HelloController.java
- net.christopherknox.rc.HelloController

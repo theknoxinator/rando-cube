@@ -21,14 +21,14 @@ List data is stored as a simple JSON file. Format looks like:
 ```
 File:
 {
-  "data":[<ListItem>],
-  "history":[<ListItem>],
+  "data":[<Item>],
+  "history":[<Item>],
   "categories":[<Category>],
   "defaultSetSize":Integer,
-  "lastSet":{<Category>:[<ListItem>]}
+  "lastSet":{<Category>:[<Item>]}
 }
 
-ListItem:
+Item:
 {
   "id":Integer,
   "title":String,
@@ -49,7 +49,7 @@ Request:
   
 Response:
   {
-    "items":[<ListItem>],
+    "items":[<Item>],
     "error":<Error>
   }
 ```
@@ -61,7 +61,7 @@ Request:
   
 Response:
   {
-    "items":[<ListItem>],
+    "items":[<Item>],
     "error":<Error>
   }
 ```
@@ -73,7 +73,7 @@ Request:
   
 Response:
   {
-    "items":[<ListItem>],
+    "items":[<Item>],
     "error":<Error>
   }
 ```
@@ -81,7 +81,7 @@ Response:
 markCompleted
 ```
 Request:
-  {<ListItem>}
+  {"id":Integer}
   
 Response:
   {"error":<Error>}
@@ -90,7 +90,7 @@ Response:
 addItem
 ```
 Request:
-  {<ListItem>}
+  {<Item>}
   
 Response:
   {"error":<Error>}
