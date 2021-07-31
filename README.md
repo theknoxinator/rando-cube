@@ -1,6 +1,6 @@
 # RandoCube
 
-### The Plan
+## The Plan
 
 The RandoCube project is a simple program for:
 * Storing a list of to-do items
@@ -13,9 +13,9 @@ The project is composed of two modules:
 * React frontend that provides the UI
 * Spring boot backend that stores the data, persists the data, and sends the randomized sets to the frontend
 
-### Technical Details
+## Technical Details
 
-***Storage***
+### Storage
 
 List data is stored as a simple JSON file. Format looks like:
 ```
@@ -33,13 +33,62 @@ Item:
   "id":Integer,
   "title":String,
   "category":<Category>,
+  "priority":<Priority>,
   "added":Timestamp,
-  "completed":Timestamp,
-  "priority":Integer
+  "completed":Timestamp
 }
 ```
 
-***API***
+### API
+
+***Categories***
+
+getCategories
+```
+Request:
+  N/A
+  
+Response:
+  {
+    "categories":[<Category>],
+    "error":<Error>
+  }
+```
+
+addCategory
+```
+Request:
+  {"category":String} (required)
+  
+Response:
+  {"error":<Error>}
+```
+
+editCategory
+```
+Request:
+  {
+    "oldCategory":String, (required)
+    "newCategory":String (required)
+  }
+  
+Response:
+  {"error":<Error>}
+```
+
+removeCategory
+```
+Request:
+  {
+    "category":String, (required)
+    "migrateTo":String (optional)
+  }
+  
+Response:
+  {"error":<Error>}
+```
+
+***Items***
 
 getRandomSet
 ```
@@ -78,19 +127,10 @@ Response:
   }
 ```
 
-markCompleted
+saveItem
 ```
 Request:
-  {"id":Integer}
-  
-Response:
-  {"error":<Error>}
-```
-
-addItem
-```
-Request:
-  {<Item>}
+  {"item":<Item>} (required)
   
 Response:
   {"error":<Error>}
@@ -99,7 +139,16 @@ Response:
 removeItem
 ```
 Request:
-  {"id":Integer}
+  {"id":Integer} (required)
+  
+Response:
+  {"error":<Error>}
+```
+
+markCompleted
+```
+Request:
+  {"id":Integer} (required)
   
 Response:
   {"error":<Error>}

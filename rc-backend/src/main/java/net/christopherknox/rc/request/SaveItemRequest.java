@@ -1,4 +1,4 @@
-package net.christopherknox.rc.response;
+package net.christopherknox.rc.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.christopherknox.rc.model.Item;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemListResponse {
-    private List<Item> items;
-    private String error;
+public class SaveItemRequest {
+    private Item item;
 }

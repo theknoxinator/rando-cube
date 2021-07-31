@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.christopherknox.rc.model.Item;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemListResponse {
-    private List<Item> items;
+public class CategoryListResponse {
+    private List<String> categories;
     private String error;
 }
