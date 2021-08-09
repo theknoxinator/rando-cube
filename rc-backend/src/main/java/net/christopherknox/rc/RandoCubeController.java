@@ -9,6 +9,7 @@ import net.christopherknox.rc.request.RemoveItemRequest;
 import net.christopherknox.rc.response.BaseResponse;
 import net.christopherknox.rc.response.CategoryListResponse;
 import net.christopherknox.rc.response.ItemListResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ public class RandoCubeController {
     public static final String HEALTH_MESSAGE = "RandoCube is up and running!";
     public static final String ERROR_CATEGORY_REQUIRED = "Category is required for this operation";
     public static final String ERROR_CATEGORY_NOT_FOUND = "Could not find category: ";
+    public static final String ERROR_CATEGORY_DUPLICATE = "Category already exists: ";
     public static final String ERROR_ID_REQUIRED = "ID is required for this operation";
     public static final String ERROR_ITEM_REQUIRED = "Item is required for this operation";
     public static final String ERROR_PRIORITY_REQUIRED = "Priority is required for this operation";
@@ -29,6 +31,7 @@ public class RandoCubeController {
     private final CategoryManager categoryManager;
     private final ItemManager itemManager;
 
+    @Autowired
     public RandoCubeController(final CategoryManager categoryManager, final ItemManager itemManager) {
         this.categoryManager = categoryManager;
         this.itemManager = itemManager;

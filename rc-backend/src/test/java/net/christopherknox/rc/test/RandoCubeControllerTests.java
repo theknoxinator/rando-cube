@@ -26,10 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static net.christopherknox.rc.RandoCubeController.ERROR_CATEGORY_NOT_FOUND;
@@ -47,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
-public class RandoCubeControllerTests {
+public class RandoCubeControllerTests extends TestBase {
 
     private static final String HEALTH_ENDPOINT = "/health";
     private static final String GET_CATEGORIES_ENDPOINT = "/getCategories";
@@ -92,7 +89,7 @@ public class RandoCubeControllerTests {
 
     /* ADD CATEGORY */
     @ParameterizedTest
-    @MethodSource("generateCategory")
+    @MethodSource("generateCategoryArguments")
     public void addCategory_ValidRequest_ReturnsEmptyResponse(final String category) throws Exception {
         final AddCategoryRequest request = AddCategoryRequest.builder().category(category).build();
         final BaseResponse response = new BaseResponse();
@@ -137,7 +134,7 @@ public class RandoCubeControllerTests {
 
     /* EDIT CATEGORY */
     @ParameterizedTest
-    @MethodSource("generateCategory")
+    @MethodSource("generateCategoryArguments")
     public void editCategory_ValidRequest_ReturnsEmptyResponse(final String category) throws Exception {
         final EditCategoryRequest request = EditCategoryRequest.builder()
             .oldCategory("Sports").newCategory(category).build();
@@ -176,7 +173,7 @@ public class RandoCubeControllerTests {
 
     /* REMOVE CATEGORY */
     @ParameterizedTest
-    @MethodSource("generateCategory")
+    @MethodSource("generateCategoryArguments")
     public void removeCategory_ValidRequest_ReturnsEmptyResponse(final String category) throws Exception {
         final RemoveCategoryRequest request = RemoveCategoryRequest.builder().category(category).build();
         final BaseResponse response = new BaseResponse();
@@ -234,7 +231,7 @@ public class RandoCubeControllerTests {
     }
 
     @ParameterizedTest
-    @MethodSource("generateCategory")
+    @MethodSource("generateCategoryArguments")
     public void getRandomSet_ValidCategory_ReturnsValidSet(final String category) throws Exception {
         final ItemListResponse response = generateItemListResponse(category, null);
 
@@ -254,7 +251,7 @@ public class RandoCubeControllerTests {
 
     /* GET FULL LIST */
     @ParameterizedTest
-    @MethodSource("generateCategory")
+    @MethodSource("generateCategoryArguments")
     public void getFullList_ValidCategory_ReturnsValidList(final String category) throws Exception {
         final ItemListResponse response = generateItemListResponse(category, null);
 
@@ -279,7 +276,7 @@ public class RandoCubeControllerTests {
 
     /* GET COMPLETED LIST */
     @ParameterizedTest
-    @MethodSource("generateCategory")
+    @MethodSource("generateCategoryArguments")
     public void getCompletedList_ValidCategory_ReturnsValidList(final String category) throws Exception {
         final ItemListResponse response = generateItemListResponse(category, null);
 
@@ -422,72 +419,38 @@ public class RandoCubeControllerTests {
 
     /* HELPER FUNCTIONS */
     private static CategoryListResponse generateCategoryListResponse() {
-        List<String> categories = generateCategory()
-            .map(arguments -> arguments.get()[0].toString())
-            .collect(Collectors.toList());
-
         return CategoryListResponse.builder()
-            .categories(categories)
+            .categories(generateCategories())
             .build();
     }
 
     private static ItemListResponse generateItemListResponse(final String category, final String error) {
-        List<Item> items = new ArrayList<>();
-        if (category != null) {
-            for (int i = 1; i <= 3; i++) {
-                items.add(Item.builder().id(i).category(category).title("Test Title " + i).build());
-            }
-        } else {
-            int i = 1;
-            generateCategory().forEach(arguments -> {
-                items.add(Item.builder().id(i).category((String) arguments.get()[0]).title("Test Title " + i).build());
-            });
-        }
-
         return ItemListResponse.builder()
-            .items(items)
+            .items(generateItems(category))
             .error(error)
             .build();
     }
 
-    private static Stream<Arguments> generateCategory() {
-        return Stream.of(
-            Arguments.of("Book"),
-            Arguments.of("Board Games"),
-            Arguments.of("Video Games"),
-            Arguments.of("Movies/TV")
-        );
-    }
-
     private static Stream<Arguments> generateCategoryAndUseLast() {
-        return Stream.of(
-            Arguments.of("Book", false),
-            Arguments.of("Book", true),
-            Arguments.of("Board Games", false),
-            Arguments.of("Board Games", true),
-            Arguments.of("Video Games", false),
-            Arguments.of("Video Games", true),
-            Arguments.of("Movies/TV", false),
-            Arguments.of("Movies/TV", true)
-        );
+        return generateCategories().stream().flatMap(c -> Stream.of(Arguments.of(c, false), Arguments.of(c, true)));
     }
 
     private static Stream<Arguments> generateMissingCategories() {
         return Stream.of(
-            Arguments.of(null, "Book", ERROR_CATEGORY_NOT_FOUND + "null"),
-            Arguments.of("", "Book", ERROR_CATEGORY_NOT_FOUND),
-            Arguments.of("Book", null, ERROR_CATEGORY_REQUIRED),
-            Arguments.of("Book", "", ERROR_CATEGORY_REQUIRED)
+            Arguments.of(null, testCategory, ERROR_CATEGORY_NOT_FOUND + "null"),
+            Arguments.of("", testCategory, ERROR_CATEGORY_NOT_FOUND),
+            Arguments.of(testCategory, null, ERROR_CATEGORY_REQUIRED),
+            Arguments.of(testCategory, "", ERROR_CATEGORY_REQUIRED)
         );
     }
 
     private static Stream<Arguments> generateMissingItemParameters() {
         return Stream.of(
-            Arguments.of(null, "Book", Priority.LOW, ERROR_TITLE_REQUIRED),
-            Arguments.of("", "Book", Priority.LOW, ERROR_TITLE_REQUIRED),
-            Arguments.of("Test Title", null, Priority.LOW, ERROR_CATEGORY_REQUIRED),
-            Arguments.of("Test Title", "", Priority.LOW, ERROR_CATEGORY_REQUIRED),
-            Arguments.of("Test Title", "Book", null, ERROR_PRIORITY_REQUIRED)
+            Arguments.of(null, testCategory, Priority.LOW, ERROR_TITLE_REQUIRED),
+            Arguments.of("", testCategory, Priority.LOW, ERROR_TITLE_REQUIRED),
+            Arguments.of(testTitle, null, Priority.LOW, ERROR_CATEGORY_REQUIRED),
+            Arguments.of(testTitle, "", Priority.LOW, ERROR_CATEGORY_REQUIRED),
+            Arguments.of(testTitle, testCategory, null, ERROR_PRIORITY_REQUIRED)
         );
     }
 

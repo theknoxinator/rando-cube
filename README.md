@@ -25,7 +25,7 @@ File:
   "history":[<Item>],
   "categories":[<Category>],
   "defaultSetSize":Integer,
-  "lastSet":{<Category>:[<Item>]}
+  "lastSets":{<Category>:[<Item>]}
 }
 
 Item:
