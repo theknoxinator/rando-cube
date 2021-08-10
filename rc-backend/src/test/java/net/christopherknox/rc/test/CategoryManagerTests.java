@@ -43,7 +43,7 @@ public class CategoryManagerTests extends TestBase {
     /* GET CATEGORIES */
     @Test
     public void getCategories_CategoriesExist_ReturnsValidList() {
-        when(dataHandler.getCategories()).thenReturn(exampleCategories);
+        when(dataHandler.getCategories()).thenReturn(generateCategories());
 
         final CategoryListResponse response = categoryManager.getCategories();
         assertEquals(exampleCategories, response.getCategories());
@@ -54,7 +54,7 @@ public class CategoryManagerTests extends TestBase {
     public void getCategories_NoCategoriesExist_ReturnsEmptyList() {
         final List<String> categories = new ArrayList<>();
 
-        when(dataHandler.getCategories()).thenReturn(categories);
+        when(dataHandler.getCategories()).thenReturn(new ArrayList<>());
 
         final CategoryListResponse response = categoryManager.getCategories();
         assertEquals(categories, response.getCategories());
@@ -127,18 +127,18 @@ public class CategoryManagerTests extends TestBase {
     public void editCategory_CategoryItemsAndLastSetExists_CategoryItemsAndLastSetUpdated(final String category) throws Exception {
         final List<String> expectedCategories = generateCategories();
         expectedCategories.replaceAll(c -> c.equals(category) ? testCategory : c);
-        final List<Item> expectedItems = generateItems(null);
+        final List<Item> expectedItems = generateItems();
         expectedItems.forEach(i -> {
             if (i.getCategory().equals(category)) {
                 i.setCategory(testCategory);
             }
         });
-        final Map<String, List<Item>> expectedLastSets = generateLastSets(null);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets();
         expectedLastSets.remove(category);
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.editCategory(category.toLowerCase(), testCategory);
         assertNull(response.getError());
@@ -154,13 +154,13 @@ public class CategoryManagerTests extends TestBase {
         final List<String> expectedCategories = generateCategories();
         expectedCategories.replaceAll(c -> c.equals(category) ? testCategory : c);
         final List<Item> expectedItems =
-            generateItems(null).stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
-        final Map<String, List<Item>> expectedLastSets = generateLastSets(null);
+            generateItems().stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
+        final Map<String, List<Item>> expectedLastSets = generateLastSets();
         expectedLastSets.remove(category);
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
         final List<Item> mockedItems =
-            generateItems(null).stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
+            generateItems().stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
         when(dataHandler.getData()).thenReturn(mockedItems);
         when(dataHandler.getLastSets()).thenReturn(generateLastSets(mockedItems));
 
@@ -211,8 +211,8 @@ public class CategoryManagerTests extends TestBase {
         mockedCategories.add(testCategory);
 
         when(dataHandler.getCategories()).thenReturn(mockedCategories);
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.editCategory(getRandomCategory(), testCategory.toUpperCase());
         assertEquals(RandoCubeController.ERROR_CATEGORY_DUPLICATE + testCategory.toUpperCase(), response.getError());
@@ -226,8 +226,8 @@ public class CategoryManagerTests extends TestBase {
     @MethodSource("generateCategoryArguments")
     public void editCategory_OldNewCategoriesSame_ReturnsError(final String category) throws Exception {
         when(dataHandler.getCategories()).thenReturn(generateCategories());
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.editCategory(category.toLowerCase(), category.toUpperCase());
         assertEquals(RandoCubeController.ERROR_CATEGORY_DUPLICATE + category.toUpperCase(), response.getError());
@@ -242,8 +242,8 @@ public class CategoryManagerTests extends TestBase {
         final String category = getRandomCategory();
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
         doThrow(new IOException("Test")).when(dataHandler).save();
 
         final BaseResponse response = categoryManager.editCategory(category, testCategory);
@@ -258,18 +258,18 @@ public class CategoryManagerTests extends TestBase {
         final String migrateTo) throws Exception {
         final List<String> expectedCategories =
             generateCategories().stream().filter(c -> !c.equals(category)).collect(Collectors.toList());
-        final List<Item> expectedItems = generateItems(null);
+        final List<Item> expectedItems = generateItems();
         expectedItems.forEach(i -> {
             if (i.getCategory().equals(category)) {
                 i.setCategory(migrateTo);
             }
         });
-        final Map<String, List<Item>> expectedLastSets = generateLastSets(null);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets();
         expectedLastSets.remove(category);
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.removeCategory(category.toLowerCase(), migrateTo.toUpperCase());
         assertNull(response.getError());
@@ -285,13 +285,13 @@ public class CategoryManagerTests extends TestBase {
         final List<String> expectedCategories =
             generateCategories().stream().filter(c -> !c.equals(category)).collect(Collectors.toList());
         final List<Item> expectedItems =
-            generateItems(null).stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
-        final Map<String, List<Item>> expectedLastSets = generateLastSets(null);
+            generateItems().stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
+        final Map<String, List<Item>> expectedLastSets = generateLastSets();
         expectedLastSets.remove(category);
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.removeCategory(category.toLowerCase(), null);
         assertNull(response.getError());
@@ -308,13 +308,13 @@ public class CategoryManagerTests extends TestBase {
         final List<String> expectedCategories =
             generateCategories().stream().filter(c -> !c.equals(category)).collect(Collectors.toList());
         final List<Item> expectedItems =
-            generateItems(null).stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
-        final Map<String, List<Item>> expectedLastSets = generateLastSets(null);
+            generateItems().stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
+        final Map<String, List<Item>> expectedLastSets = generateLastSets();
         expectedLastSets.remove(category);
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
         final List<Item> mockedItems =
-            generateItems(null).stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
+            generateItems().stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
         when(dataHandler.getData()).thenReturn(mockedItems);
         when(dataHandler.getLastSets()).thenReturn(generateLastSets(mockedItems));
 
@@ -332,13 +332,13 @@ public class CategoryManagerTests extends TestBase {
         final List<String> expectedCategories =
             generateCategories().stream().filter(c -> !c.equals(category)).collect(Collectors.toList());
         final List<Item> expectedItems =
-            generateItems(null).stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
-        final Map<String, List<Item>> expectedLastSets = generateLastSets(null);
+            generateItems().stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
+        final Map<String, List<Item>> expectedLastSets = generateLastSets();
         expectedLastSets.remove(category);
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
         final List<Item> mockedItems =
-            generateItems(null).stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
+            generateItems().stream().filter(i -> !i.getCategory().equals(category)).collect(Collectors.toList());
         when(dataHandler.getData()).thenReturn(mockedItems);
         when(dataHandler.getLastSets()).thenReturn(generateLastSets(mockedItems));
 
@@ -404,8 +404,8 @@ public class CategoryManagerTests extends TestBase {
     @MethodSource("generateCategoryArguments")
     public void removeCategory_RemoveMigrateCategoriesSame_ReturnsError(final String category) throws Exception {
         when(dataHandler.getCategories()).thenReturn(generateCategories());
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.removeCategory(category.toLowerCase(), category.toUpperCase());
         assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category.toUpperCase(), response.getError());
@@ -420,8 +420,8 @@ public class CategoryManagerTests extends TestBase {
         final String category = getRandomCategory();
 
         when(dataHandler.getCategories()).thenReturn(generateCategories());
-        when(dataHandler.getData()).thenReturn(generateItems(null));
-        when(dataHandler.getLastSets()).thenReturn(generateLastSets(null));
+        when(dataHandler.getData()).thenReturn(generateItems());
+        when(dataHandler.getLastSets()).thenReturn(generateLastSets());
         doThrow(new IOException("Test")).when(dataHandler).save();
 
         final BaseResponse response = categoryManager.removeCategory(category, null);

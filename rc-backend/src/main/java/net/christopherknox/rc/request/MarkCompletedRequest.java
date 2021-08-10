@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MarkCompletedRequest {
     private Integer id;
+    private Boolean unmark;
 }

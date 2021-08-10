@@ -24,8 +24,9 @@ File:
   "data":[<Item>],
   "history":[<Item>],
   "categories":[<Category>],
+  "lastSets":{<Category>:[<Item>]},
   "defaultSetSize":Integer,
-  "lastSets":{<Category>:[<Item>]}
+  "nextId":Integer
 }
 
 Item:
@@ -130,7 +131,10 @@ Response:
 saveItem
 ```
 Request:
-  {"item":<Item>} (required)
+  {
+    "item":<Item>, (required)
+    "ignoreDuplicate":Boolean (optional)
+  }
   
 Response:
   {"error":<Error>}
@@ -148,7 +152,10 @@ Response:
 markCompleted
 ```
 Request:
-  {"id":Integer} (required)
+  {
+    "id":Integer, (required)
+    "unmark":Boolean (optional)
+  }
   
 Response:
   {"error":<Error>}

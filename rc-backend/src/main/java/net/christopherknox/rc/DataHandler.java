@@ -19,8 +19,9 @@ public class DataHandler {
     private List<Item> data;
     private List<Item> history;
     private List<String> categories;
-    private Integer defaultSetSize;
     private Map<String, List<Item>> lastSets;
+    private Integer defaultSetSize;
+    private Integer nextId;
 
     public void save() throws IOException {
         File file = new File("test.txt");

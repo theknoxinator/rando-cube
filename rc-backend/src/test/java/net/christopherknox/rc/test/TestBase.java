@@ -4,11 +4,13 @@ import net.christopherknox.rc.model.Item;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.params.provider.Arguments;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class TestBase {
@@ -28,18 +30,40 @@ public abstract class TestBase {
         return exampleCategories.get((new Random()).nextInt(exampleCategories.size()));
     }
 
+    protected static List<Item> generateItems() {
+        return generateItems(false);
+    }
+
     protected static List<Item> generateItems(final String category) {
+        return generateItems(category, false);
+    }
+
+    protected static List<Item> generateItems(final boolean completed) {
+        return generateItems(null, completed);
+    }
+
+    protected static List<Item> generateItems(final String category, final boolean completed) {
         List<Item> items = new ArrayList<>();
-        if (category != null) {
+        int count = 0;
+        for (String c : exampleCategories) {
             for (int i = 1; i <= 3; i++) {
-                items.add(Item.builder().id(i).category(category).title(testTitle + " " + i).build());
+                items.add(Item.builder()
+                    .id(i + (3 * count))
+                    .category(c)
+                    .title(c + " " + testTitle + " " + i)
+                    .completed(completed ? LocalDate.now() : null)
+                    .build());
             }
-        } else {
-            int i = 1;
-            exampleCategories.forEach(c ->
-                items.add(Item.builder().id(i).category(c).title(testTitle + " " + i).build()));
+            count++;
+        }
+        if (category != null) {
+            items = items.stream().filter(i -> i.getCategory().equals(category)).collect(Collectors.toList());
         }
         return items;
+    }
+
+    protected static Map<String, List<Item>> generateLastSets() {
+        return generateLastSets(null);
     }
 
     protected static Map<String, List<Item>> generateLastSets(final List<Item> items) {

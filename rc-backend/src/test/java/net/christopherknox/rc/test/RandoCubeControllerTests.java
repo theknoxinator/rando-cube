@@ -389,7 +389,7 @@ public class RandoCubeControllerTests extends TestBase {
         final MarkCompletedRequest request = MarkCompletedRequest.builder().id(id).build();
         final BaseResponse response = new BaseResponse();
 
-        when(itemManager.markCompleted(id)).thenReturn(response);
+        when(itemManager.markCompleted(id, false)).thenReturn(response);
 
         mockMvc.perform(post(MARK_COMPLETED_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
             .andExpect(status().isOk())

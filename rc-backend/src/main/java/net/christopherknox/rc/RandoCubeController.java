@@ -24,6 +24,7 @@ public class RandoCubeController {
     public static final String ERROR_CATEGORY_NOT_FOUND = "Could not find category: ";
     public static final String ERROR_CATEGORY_DUPLICATE = "Category already exists: ";
     public static final String ERROR_ID_REQUIRED = "ID is required for this operation";
+    public static final String ERROR_ID_NOT_FOUND = "Could not find ID: ";
     public static final String ERROR_ITEM_REQUIRED = "Item is required for this operation";
     public static final String ERROR_PRIORITY_REQUIRED = "Priority is required for this operation";
     public static final String ERROR_TITLE_REQUIRED = "Title is required for this operation";
@@ -121,6 +122,6 @@ public class RandoCubeController {
         if (request.getId() == null) {
             return BaseResponse.builder().error(ERROR_ID_REQUIRED).build();
         }
-        return itemManager.markCompleted(request.getId());
+        return itemManager.markCompleted(request.getId(), request.getUnmark() != null ? request.getUnmark() : false);
     }
 }

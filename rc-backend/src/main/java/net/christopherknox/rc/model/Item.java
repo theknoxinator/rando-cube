@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -16,6 +16,6 @@ public class Item {
     private String title;
     private String category;
     private Priority priority;
-    private LocalDateTime added;
-    private LocalDateTime completed;
+    private LocalDate added;
+    private LocalDate completed;
 }
