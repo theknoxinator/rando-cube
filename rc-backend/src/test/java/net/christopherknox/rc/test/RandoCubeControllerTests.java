@@ -306,7 +306,20 @@ public class RandoCubeControllerTests extends TestBase {
         final SaveItemRequest request = SaveItemRequest.builder().item(requestItem).build();
         final BaseResponse response = new BaseResponse();
 
-        when(itemManager.saveItem(requestItem)).thenReturn(response);
+        when(itemManager.saveItem(requestItem, false)).thenReturn(response);
+
+        mockMvc.perform(post(SAVE_ITEM_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
+            .andExpect(status().isOk())
+            .andExpect(content().json(toJson(response)));
+    }
+
+    @Test
+    public void saveItem_ValidRequestWithFlag_ReturnsEmptyResponse() throws Exception {
+        final Item requestItem = Item.builder().title("Test title").category("Book").priority(Priority.LOW).build();
+        final SaveItemRequest request = SaveItemRequest.builder().item(requestItem).ignoreDuplicate(Boolean.TRUE).build();
+        final BaseResponse response = new BaseResponse();
+
+        when(itemManager.saveItem(requestItem, true)).thenReturn(response);
 
         mockMvc.perform(post(SAVE_ITEM_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
             .andExpect(status().isOk())
@@ -390,6 +403,19 @@ public class RandoCubeControllerTests extends TestBase {
         final BaseResponse response = new BaseResponse();
 
         when(itemManager.markCompleted(id, false)).thenReturn(response);
+
+        mockMvc.perform(post(MARK_COMPLETED_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
+            .andExpect(status().isOk())
+            .andExpect(content().json(toJson(response)));
+    }
+
+    @Test
+    public void markCompleted_ValidRequestWithFlag_ReturnsEmptyResponse() throws Exception {
+        final Integer id = (new Random()).nextInt(1000) + 1;
+        final MarkCompletedRequest request = MarkCompletedRequest.builder().id(id).unmark(Boolean.TRUE).build();
+        final BaseResponse response = new BaseResponse();
+
+        when(itemManager.markCompleted(id, true)).thenReturn(response);
 
         mockMvc.perform(post(MARK_COMPLETED_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(toJson(request)))
             .andExpect(status().isOk())

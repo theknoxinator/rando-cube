@@ -28,6 +28,7 @@ public class RandoCubeController {
     public static final String ERROR_ITEM_REQUIRED = "Item is required for this operation";
     public static final String ERROR_PRIORITY_REQUIRED = "Priority is required for this operation";
     public static final String ERROR_TITLE_REQUIRED = "Title is required for this operation";
+    public static final String ERROR_TITLE_DUPLICATE = "Title already exists: ";
 
     private final CategoryManager categoryManager;
     private final ItemManager itemManager;
@@ -106,7 +107,8 @@ public class RandoCubeController {
         } else if (request.getItem().getPriority() == null) {
             return BaseResponse.builder().error(ERROR_PRIORITY_REQUIRED).build();
         }
-        return itemManager.saveItem(request.getItem());
+        return itemManager.saveItem(request.getItem(), request.getIgnoreDuplicate() != null ?
+            request.getIgnoreDuplicate() : false);
     }
 
     @PostMapping("/removeItem")

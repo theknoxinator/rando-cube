@@ -1,6 +1,7 @@
 package net.christopherknox.rc.test;
 
 import net.christopherknox.rc.model.Item;
+import net.christopherknox.rc.model.Priority;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -42,15 +43,29 @@ public abstract class TestBase {
         return generateItems(null, completed);
     }
 
+    protected static List<Item> generateItems(final int categorySize) {
+        return generateItems(null, categorySize);
+    }
+
     protected static List<Item> generateItems(final String category, final boolean completed) {
+        return generateItems(category, completed, 3);
+    }
+
+    protected static List<Item> generateItems(final String category, final int categorySize) {
+        return generateItems(category, false, categorySize);
+    }
+
+    protected static List<Item> generateItems(final String category, final boolean completed, final int categorySize) {
         List<Item> items = new ArrayList<>();
         int count = 0;
         for (String c : exampleCategories) {
-            for (int i = 1; i <= 3; i++) {
+            for (int i = 1; i <= categorySize; i++) {
                 items.add(Item.builder()
-                    .id(i + (3 * count))
+                    .id(i + (categorySize * count))
                     .category(c)
                     .title(c + " " + testTitle + " " + i)
+                    .priority(Priority.MEDIUM)
+                    .added(LocalDate.now())
                     .completed(completed ? LocalDate.now() : null)
                     .build());
             }

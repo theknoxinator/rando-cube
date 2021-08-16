@@ -12,4 +12,5 @@ import net.christopherknox.rc.model.Item;
 @NoArgsConstructor
 public class SaveItemRequest {
     private Item item;
+    private Boolean ignoreDuplicate;
 }
