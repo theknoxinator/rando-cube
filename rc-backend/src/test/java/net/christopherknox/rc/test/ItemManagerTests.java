@@ -7,6 +7,7 @@ import net.christopherknox.rc.model.Item;
 import net.christopherknox.rc.model.Priority;
 import net.christopherknox.rc.response.BaseResponse;
 import net.christopherknox.rc.response.ItemListResponse;
+import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,7 +45,7 @@ public class ItemManagerTests extends TestBase {
     /* GET RANDOM SET */
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_CategoryBiggerThanSetSize_ReturnsRandomSubset(final String category) {
+    public void getRandomSet_CategoryBiggerThanSetSize_ReturnsRandomSubset(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final int categorySize = 10;
         final List<Item> expected = generateItems(category, categorySize);
@@ -55,6 +56,9 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets(response.getItems());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(setSize, response.getItems().size());
         assertThat(expected).containsAll(response.getItems());
         assertNull(response.getError());
@@ -62,7 +66,7 @@ public class ItemManagerTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_CategorySameSizeAsSetSize_ReturnsWholeCategory(final String category) {
+    public void getRandomSet_CategorySameSizeAsSetSize_ReturnsWholeCategory(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final List<Item> expected = generateItems(category, setSize);
 
@@ -72,6 +76,9 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets(response.getItems());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(setSize, response.getItems().size());
         assertThat(expected).containsExactlyInAnyOrderElementsOf(response.getItems());
         assertNull(response.getError());
@@ -79,7 +86,7 @@ public class ItemManagerTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_CategorySmallerThanSetSize_ReturnsWholeCategory(final String category) {
+    public void getRandomSet_CategorySmallerThanSetSize_ReturnsWholeCategory(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final int categorySize = 1;
         final List<Item> expected = generateItems(category, categorySize);
@@ -90,6 +97,9 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets(response.getItems());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(categorySize, response.getItems().size());
         assertThat(expected).containsExactlyInAnyOrderElementsOf(response.getItems());
         assertNull(response.getError());
@@ -97,7 +107,7 @@ public class ItemManagerTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_CategoryEmpty_ReturnsEmptySet(final String category) {
+    public void getRandomSet_CategoryEmpty_ReturnsEmptySet(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final int categorySize = 10;
         final List<Item> expected = generateItems(category, categorySize);
@@ -110,13 +120,16 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
+        final Map<String, List<Item>> expectedLastSets = Maps.newHashMap(category, new ArrayList<>());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(0, response.getItems().size());
         assertNull(response.getError());
     }
 
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_AllLastSetItemsStillPresent_ReturnsFullLastSet(final String category) {
+    public void getRandomSet_AllLastSetItemsStillPresent_ReturnsFullLastSet(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final int categorySize = 10;
         final List<Item> expected = generateItems(category, categorySize).subList(0, setSize);
@@ -129,6 +142,9 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets(response.getItems());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(setSize, response.getItems().size());
         assertThat(expected).containsExactlyInAnyOrderElementsOf(response.getItems());
         assertNull(response.getError());
@@ -136,7 +152,7 @@ public class ItemManagerTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_SomeLastSetItemsStillPresent_ReturnsRandomSubsetWithLastSet(final String category) {
+    public void getRandomSet_SomeLastSetItemsStillPresent_ReturnsRandomSubsetWithLastSet(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final int categorySize = 10;
         final List<Item> expected = generateItems(category, categorySize);
@@ -150,6 +166,9 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets(response.getItems());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(setSize, response.getItems().size());
         assertThat(response.getItems()).containsAll(expectedLastSet);
         assertThat(expected).containsAll(response.getItems());
@@ -158,7 +177,7 @@ public class ItemManagerTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_NoLastSetItemsStillPresent_ReturnsRandomSubset(final String category) {
+    public void getRandomSet_NoLastSetItemsStillPresent_ReturnsRandomSubset(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final int categorySize = 10;
         final List<Item> expected = generateItems(category, categorySize);
@@ -171,11 +190,14 @@ public class ItemManagerTests extends TestBase {
         final List<Item> mockedItems =
             generateItems(categorySize).stream().filter(i -> i.getId() % 2 != 0).collect(Collectors.toList());
         when(dataHandler.getData()).thenReturn(mockedItems);
-        final Map<String, List<Item>> mockedLastSets = Map.of(category, notExpectedLastSet);
+        final Map<String, List<Item>> mockedLastSets = Maps.newHashMap(category, notExpectedLastSet);
         when(dataHandler.getLastSets()).thenReturn(mockedLastSets);
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets(response.getItems());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(setSize, response.getItems().size());
         assertThat(response.getItems()).noneMatch(notExpectedLastSet::contains);
         assertThat(expected).containsAll(response.getItems());
@@ -184,7 +206,7 @@ public class ItemManagerTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("generateCategoryArguments")
-    public void getRandomSet_LastSetItemsStillPresentNoFlag_ReturnsRandomSubset(final String category) {
+    public void getRandomSet_LastSetItemsStillPresentNoFlag_ReturnsRandomSubset(final String category) throws Exception {
         final Integer setSize = (new Random()).nextInt(4) + 2;
         final int categorySize = 10;
         final List<Item> expected = generateItems(category, categorySize);
@@ -197,6 +219,9 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getDefaultSetSize()).thenReturn(setSize);
 
         final ItemListResponse response = itemManager.getRandomSet(category, false);
+        final Map<String, List<Item>> expectedLastSets = generateLastSets(response.getItems());
+        verify(dataHandler).setLastSets(expectedLastSets);
+        verify(dataHandler).save();
         assertEquals(setSize, response.getItems().size());
         assertThat(expected).containsAll(response.getItems());
         assertNull(response.getError());

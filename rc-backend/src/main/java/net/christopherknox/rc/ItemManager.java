@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -46,10 +47,11 @@ public class ItemManager {
             // With our weighted list, now select a set of unique items
             final int setSize = Math.min(dataHandler.getDefaultSetSize(), response.getItems().size());
             final Set<Item> itemsToReturn = new HashSet<>();
+            final Map<String, List<Item>> lastSets = dataHandler.getLastSets();
             if (useLast) {
                 // Flag for use last is set, so grab the last set of options for this category if they exist and put
                 // them in the set first
-                final List<Item> lastSet = dataHandler.getLastSets().getOrDefault(category, new ArrayList<>());
+                final List<Item> lastSet = lastSets.getOrDefault(category, new ArrayList<>());
                 for (Item item : lastSet) {
                     if (weightedItems.contains(item)) {
                         itemsToReturn.add(item);
@@ -61,6 +63,9 @@ public class ItemManager {
                 itemsToReturn.add(weightedItems.get(rand.nextInt(weightedItems.size())));
             }
 
+            lastSets.put(category, new ArrayList<>(itemsToReturn));
+            dataHandler.setLastSets(lastSets);
+            dataHandler.save();
             response.setItems(new ArrayList<>(itemsToReturn));
             return response;
         } catch (Exception e) {
