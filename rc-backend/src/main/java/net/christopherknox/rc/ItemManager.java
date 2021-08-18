@@ -108,7 +108,7 @@ public class ItemManager {
                 Optional<Item> existingItemToSave = getItem(fullItems, item.getId());
                 if (existingItemToSave.isEmpty()) {
                     return BaseResponse.builder()
-                        .error(RandoCubeController.ERROR_ID_NOT_FOUND + item.getId())
+                        .error(Constants.ERROR_ID_NOT_FOUND + item.getId())
                         .build();
                 }
                 itemToSave = existingItemToSave.get();
@@ -119,7 +119,7 @@ public class ItemManager {
                 dataHandler.getCategories().stream().filter(c -> c.equalsIgnoreCase(item.getCategory())).findAny();
             if (category.isEmpty()) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + item.getCategory())
+                    .error(Constants.ERROR_CATEGORY_NOT_FOUND + item.getCategory())
                     .build();
             }
 
@@ -132,7 +132,7 @@ public class ItemManager {
                     Optional<Item> matchesId = duplicates.stream().filter(i -> i.getId().equals(item.getId())).findAny();
                     if (matchesId.isEmpty()) {
                         return BaseResponse.builder()
-                            .error(RandoCubeController.ERROR_TITLE_DUPLICATE + item.getTitle())
+                            .error(Constants.ERROR_TITLE_DUPLICATE + item.getTitle())
                             .build();
                     }
                 }
@@ -188,7 +188,7 @@ public class ItemManager {
 
             if (!foundItem) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_ID_NOT_FOUND + id)
+                    .error(Constants.ERROR_ID_NOT_FOUND + id)
                     .build();
             }
 
@@ -236,7 +236,7 @@ public class ItemManager {
 
             if (!foundItem) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_ID_NOT_FOUND + id)
+                    .error(Constants.ERROR_ID_NOT_FOUND + id)
                     .build();
             }
 
@@ -264,7 +264,7 @@ public class ItemManager {
             dataHandler.getCategories().stream().filter(c -> c.equalsIgnoreCase(category)).findAny();
         if (categoryToFilter.isEmpty()) {
             return ItemListResponse.builder()
-                .error(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category)
+                .error(Constants.ERROR_CATEGORY_NOT_FOUND + category)
                 .build();
         }
         return ItemListResponse.builder()

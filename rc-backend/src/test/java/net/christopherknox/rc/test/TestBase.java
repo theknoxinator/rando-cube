@@ -1,10 +1,14 @@
 package net.christopherknox.rc.test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.christopherknox.rc.DataHandler;
 import net.christopherknox.rc.model.Item;
 import net.christopherknox.rc.model.Priority;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.params.provider.Arguments;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +17,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class TestBase {
     protected static final List<String> exampleCategories = List.of("Books", "Board Games", "Video Games", "Movies/TV");
@@ -89,5 +95,43 @@ public abstract class TestBase {
         }
         itemsToProcess.forEach(i -> lastSets.computeIfAbsent(i.getCategory(), k -> new ArrayList<>()).add(i));
         return lastSets;
+    }
+
+    protected DataHandler.Data generateTestData() {
+        Random rand = new Random();
+        return generateTestData(rand.nextInt(10) + 1);
+    }
+
+    protected DataHandler.Data generateTestData(final int categorySize) {
+        Random rand = new Random();
+        DataHandler.Data testData = new DataHandler.Data();
+        testData.setData(generateItems(categorySize));
+        testData.setHistory(new ArrayList<>());
+        testData.setCategories(generateCategories());
+        testData.setLastSets(generateLastSets(testData.getData()));
+        testData.setDefaultSetSize(rand.nextInt(4) + 2);
+        testData.setNextId(rand.nextInt(1000) + 1);
+        return testData;
+    }
+
+    protected void saveTestData(final String filepath, final DataHandler.Data testData) throws IOException {
+        File testfile = new File(filepath);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(testfile, testData);
+    }
+
+    protected DataHandler.Data getTestData(final String filepath) throws IOException {
+        File testfile = new File(filepath);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(testfile, DataHandler.Data.class);
+    }
+
+    protected String toJson(final Object response) {
+        try {
+            return (new ObjectMapper()).writeValueAsString(response);
+        } catch (Exception e) {
+            fail("Could not convert to JSON: " + response.toString(), e);
+        }
+        return "";
     }
 }

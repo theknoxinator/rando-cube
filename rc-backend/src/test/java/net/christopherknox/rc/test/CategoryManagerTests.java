@@ -1,8 +1,8 @@
 package net.christopherknox.rc.test;
 
 import net.christopherknox.rc.CategoryManager;
+import net.christopherknox.rc.Constants;
 import net.christopherknox.rc.DataHandler;
-import net.christopherknox.rc.RandoCubeController;
 import net.christopherknox.rc.model.Item;
 import net.christopherknox.rc.response.BaseResponse;
 import net.christopherknox.rc.response.CategoryListResponse;
@@ -106,7 +106,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getCategories()).thenReturn(generateCategories());
 
         final BaseResponse response = categoryManager.addCategory(duplicateCategory);
-        assertEquals(RandoCubeController.ERROR_CATEGORY_DUPLICATE + duplicateCategory, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_DUPLICATE + duplicateCategory, response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).save();
     }
@@ -181,7 +181,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(new HashMap<>());
 
         final BaseResponse response = categoryManager.editCategory(category, testCategory);
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());
@@ -198,7 +198,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(new HashMap<>());
 
         final BaseResponse response = categoryManager.editCategory(category, testCategory);
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());
@@ -215,7 +215,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.editCategory(getRandomCategory(), testCategory.toUpperCase());
-        assertEquals(RandoCubeController.ERROR_CATEGORY_DUPLICATE + testCategory.toUpperCase(), response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_DUPLICATE + testCategory.toUpperCase(), response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());
@@ -230,7 +230,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.editCategory(category.toLowerCase(), category.toUpperCase());
-        assertEquals(RandoCubeController.ERROR_CATEGORY_DUPLICATE + category.toUpperCase(), response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_DUPLICATE + category.toUpperCase(), response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());
@@ -359,7 +359,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(new HashMap<>());
 
         final BaseResponse response = categoryManager.removeCategory(category, null);
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());
@@ -376,7 +376,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(new HashMap<>());
 
         final BaseResponse response = categoryManager.removeCategory(category, null);
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());
@@ -393,7 +393,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(new HashMap<>());
 
         final BaseResponse response = categoryManager.removeCategory(category, migrateTo);
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + migrateTo, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + migrateTo, response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());
@@ -408,7 +408,7 @@ public class CategoryManagerTests extends TestBase {
         when(dataHandler.getLastSets()).thenReturn(generateLastSets());
 
         final BaseResponse response = categoryManager.removeCategory(category.toLowerCase(), category.toUpperCase());
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category.toUpperCase(), response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category.toUpperCase(), response.getError());
         verify(dataHandler, never()).setCategories(anyList());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setLastSets(anyMap());

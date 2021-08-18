@@ -41,7 +41,7 @@ public class CategoryManager {
             List<String> categories = dataHandler.getCategories();
             if (categories.stream().anyMatch(c -> c.equalsIgnoreCase(category))) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_CATEGORY_DUPLICATE + category)
+                    .error(Constants.ERROR_CATEGORY_DUPLICATE + category)
                     .build();
             }
             categories.add(category);
@@ -63,11 +63,11 @@ public class CategoryManager {
                 categories.stream().filter(c -> c.equalsIgnoreCase(oldCategory)).findAny();
             if (categoryToReplace.isEmpty()) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + oldCategory)
+                    .error(Constants.ERROR_CATEGORY_NOT_FOUND + oldCategory)
                     .build();
             } else if (categories.stream().anyMatch(c -> c.equalsIgnoreCase(newCategory))) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_CATEGORY_DUPLICATE + newCategory)
+                    .error(Constants.ERROR_CATEGORY_DUPLICATE + newCategory)
                     .build();
             }
             categories.replaceAll(c -> c.equals(categoryToReplace.get()) ? newCategory : c);
@@ -107,12 +107,12 @@ public class CategoryManager {
                 categories.stream().filter(c -> c.equalsIgnoreCase(migrateTo)).findAny();
             if (categoryToRemove.isEmpty()) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category)
+                    .error(Constants.ERROR_CATEGORY_NOT_FOUND + category)
                     .build();
             } else if (migrateTo != null && categoryToMigrateTo.isEmpty() ||
                 categoryToMigrateTo.equals(categoryToRemove)) {
                 return BaseResponse.builder()
-                    .error(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + migrateTo)
+                    .error(Constants.ERROR_CATEGORY_NOT_FOUND + migrateTo)
                     .build();
             }
             categories.remove(categoryToRemove.get());

@@ -1,6 +1,5 @@
 package net.christopherknox.rc.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.christopherknox.rc.DataHandler;
 import net.christopherknox.rc.model.Item;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -21,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -63,7 +60,7 @@ public class DataHandlerTests extends TestBase {
     @Test
     public void init_FileDoesExist_FileLoaded() throws Exception {
         DataHandler.Data testData = generateTestData();
-        saveTestData(testData);
+        saveTestData(testFilepath, testData);
 
         dataHandler.init();
 
@@ -85,7 +82,7 @@ public class DataHandlerTests extends TestBase {
     @Test
     public void reload_FileDoesExist_FileLoaded() throws Exception {
         DataHandler.Data testData = generateTestData();
-        saveTestData(testData);
+        saveTestData(testFilepath, testData);
 
         dataHandler.reload();
 
@@ -115,7 +112,7 @@ public class DataHandlerTests extends TestBase {
         dataHandler.save();
 
         assertTrue(Files.exists(Paths.get(testFilepath)));
-        DataHandler.Data testData = getTestData();
+        DataHandler.Data testData = getTestData(testFilepath);
         assertEquals(items, testData.getData());
         assertEquals(completed, testData.getHistory());
         assertEquals(categories, testData.getCategories());
@@ -126,7 +123,7 @@ public class DataHandlerTests extends TestBase {
 
     @Test
     public void save_FileDoesExist_FileOverwrittenWithData() throws Exception {
-        saveTestData(generateTestData());
+        saveTestData(testFilepath, generateTestData());
         final List<Item> items = generateItems(5);
         final List<Item> completed = generateItems(testCategory, true, 2);
         final List<String> categories = generateCategories();
@@ -142,7 +139,7 @@ public class DataHandlerTests extends TestBase {
         dataHandler.save();
 
         assertTrue(Files.exists(Paths.get(testFilepath)));
-        DataHandler.Data testData = getTestData();
+        DataHandler.Data testData = getTestData(testFilepath);
         assertEquals(items, testData.getData());
         assertEquals(completed, testData.getHistory());
         assertEquals(categories, testData.getCategories());
@@ -158,29 +155,5 @@ public class DataHandlerTests extends TestBase {
             Integer nextId = dataHandler.getNextId();
             assertEquals(expected + i, nextId);
         }
-    }
-
-    private DataHandler.Data generateTestData() {
-        Random rand = new Random();
-        DataHandler.Data testData = new DataHandler.Data();
-        testData.setData(generateItems(rand.nextInt(10)));
-        testData.setHistory(new ArrayList<>());
-        testData.setCategories(generateCategories());
-        testData.setLastSets(generateLastSets(testData.getData()));
-        testData.setDefaultSetSize(rand.nextInt(4) + 2);
-        testData.setNextId(rand.nextInt(1000) + 1);
-        return testData;
-    }
-
-    private void saveTestData(final DataHandler.Data testData) throws IOException {
-        File testfile = new File(testFilepath);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(testfile, testData);
-    }
-
-    private DataHandler.Data getTestData() throws IOException {
-        File testfile = new File(testFilepath);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(testfile, DataHandler.Data.class);
     }
 }

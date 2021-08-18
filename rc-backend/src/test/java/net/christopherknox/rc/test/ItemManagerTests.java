@@ -1,8 +1,8 @@
 package net.christopherknox.rc.test;
 
+import net.christopherknox.rc.Constants;
 import net.christopherknox.rc.DataHandler;
 import net.christopherknox.rc.ItemManager;
-import net.christopherknox.rc.RandoCubeController;
 import net.christopherknox.rc.model.Item;
 import net.christopherknox.rc.model.Priority;
 import net.christopherknox.rc.response.BaseResponse;
@@ -237,7 +237,7 @@ public class ItemManagerTests extends TestBase {
 
         final ItemListResponse response = itemManager.getRandomSet(category, true);
         assertNull(response.getItems());
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
     }
 
     @Test
@@ -327,7 +327,7 @@ public class ItemManagerTests extends TestBase {
 
         final ItemListResponse response = itemManager.getFullList(category);
         assertNull(response.getItems());
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
     }
 
     @Test
@@ -416,7 +416,7 @@ public class ItemManagerTests extends TestBase {
 
         final ItemListResponse response = itemManager.getCompletedList(category);
         assertNull(response.getItems());
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + category, response.getError());
     }
 
     @Test
@@ -496,7 +496,7 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getHistory()).thenReturn(new ArrayList<>());
 
         final BaseResponse response = itemManager.saveItem(item, false);
-        assertEquals(RandoCubeController.ERROR_ID_NOT_FOUND + item.getId(), response.getError());
+        assertEquals(Constants.ERROR_ID_NOT_FOUND + item.getId(), response.getError());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).save();
     }
@@ -510,7 +510,7 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getHistory()).thenReturn(new ArrayList<>());
 
         final BaseResponse response = itemManager.saveItem(item, false);
-        assertEquals(RandoCubeController.ERROR_CATEGORY_NOT_FOUND + item.getCategory(), response.getError());
+        assertEquals(Constants.ERROR_CATEGORY_NOT_FOUND + item.getCategory(), response.getError());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).save();
     }
@@ -526,7 +526,7 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getHistory()).thenReturn(new ArrayList<>());
 
         final BaseResponse response = itemManager.saveItem(item, false);
-        assertEquals(RandoCubeController.ERROR_TITLE_DUPLICATE + item.getTitle(), response.getError());
+        assertEquals(Constants.ERROR_TITLE_DUPLICATE + item.getTitle(), response.getError());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).save();
     }
@@ -542,7 +542,7 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getHistory()).thenReturn(generateItems(true));
 
         final BaseResponse response = itemManager.saveItem(item, false);
-        assertEquals(RandoCubeController.ERROR_TITLE_DUPLICATE + item.getTitle(), response.getError());
+        assertEquals(Constants.ERROR_TITLE_DUPLICATE + item.getTitle(), response.getError());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).save();
     }
@@ -644,7 +644,7 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getHistory()).thenReturn(new ArrayList<>());
 
         final BaseResponse response = itemManager.removeItem(id);
-        assertEquals(RandoCubeController.ERROR_ID_NOT_FOUND + id, response.getError());
+        assertEquals(Constants.ERROR_ID_NOT_FOUND + id, response.getError());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setHistory(anyList());
         verify(dataHandler, never()).save();
@@ -710,7 +710,7 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getHistory()).thenReturn(new ArrayList<>());
 
         final BaseResponse response = itemManager.markCompleted(id, false);
-        assertEquals(RandoCubeController.ERROR_ID_NOT_FOUND + id, response.getError());
+        assertEquals(Constants.ERROR_ID_NOT_FOUND + id, response.getError());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setHistory(anyList());
         verify(dataHandler, never()).save();
@@ -724,7 +724,7 @@ public class ItemManagerTests extends TestBase {
         when(dataHandler.getHistory()).thenReturn(generateItems(true));
 
         final BaseResponse response = itemManager.markCompleted(id, true);
-        assertEquals(RandoCubeController.ERROR_ID_NOT_FOUND + id, response.getError());
+        assertEquals(Constants.ERROR_ID_NOT_FOUND + id, response.getError());
         verify(dataHandler, never()).setData(anyList());
         verify(dataHandler, never()).setHistory(anyList());
         verify(dataHandler, never()).save();
