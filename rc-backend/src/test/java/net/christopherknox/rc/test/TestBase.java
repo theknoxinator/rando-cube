@@ -110,7 +110,7 @@ public abstract class TestBase {
         testData.setCategories(generateCategories());
         testData.setLastSets(generateLastSets(testData.getData()));
         testData.setDefaultSetSize(rand.nextInt(4) + 2);
-        testData.setNextId(rand.nextInt(1000) + 1);
+        testData.setNextId(rand.nextInt(1000) + testData.getData().size());
         return testData;
     }
 
