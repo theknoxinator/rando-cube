@@ -1,13 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Rando from './rando';
 import Categories from './categories';
 import './index.css';
-
-class Rando extends React.Component {
-  render() {
-    return "TODO";
-  }
-}
 
 class Main extends React.Component {
   constructor(props) {

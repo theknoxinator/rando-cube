@@ -1,4 +1,5 @@
 import React from 'react';
+import {getCategories, addCategory, editCategory, removeCategory} from './backend';
 
 function AddButton(props) {
   return (
@@ -51,7 +52,7 @@ function DeleteSingleField(props) {
       </div>
       <div className="col">
         <select className="form-select" aria-label="Migrate to" onChange={props.onChange}>
-          <option selected>Do not migrate</option>
+          <option value="">Do not migrate</option>
           {migrateOptions}
         </select>
       </div>
@@ -122,7 +123,6 @@ class ViewEditCategory extends React.Component {
     this.state = {
       value: props.value,
       newValue: '',
-      migrateOptions: props.migrateOptions,
       migrateTo: '',
       editField: false,
       deleteField: false,
@@ -173,7 +173,7 @@ class ViewEditCategory extends React.Component {
                               onCancel={(e) => this.handleCancel(e)} />
     } else if (deleteField) {
       return <DeleteSingleField value={this.state.value}
-                                migrateOptions={this.state.migrateOptions}
+                                migrateOptions={this.props.migrateOptions}
                                 onSubmit={(e) => this.handleDeleteConfirm(e)}
                                 onChange={(e) => this.handleMigrateChange(e)}
                                 onCancel={(e) => this.handleCancel(e)} />
@@ -185,21 +185,14 @@ class ViewEditCategory extends React.Component {
   }
 }
 
-const getCategoriesAsync = async (setCategories) => {
-  fetch('http://localhost:8080/getCategories')
-    .then(response => response.json())
-    .then(result => {
-      setCategories(result.categories);
-    });
-}
-
 class Categories extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       categories: [],
+      errorMsg: null,
     }
-    getCategoriesAsync((data) => this.setState({categories: data}));
+    this.reloadCategories();
   }
 
   getMigrateOptions(category) {
@@ -207,33 +200,40 @@ class Categories extends React.Component {
     return categories.filter(c => c !== category);
   }
 
+  handleError(error, keep=false) {
+    const currentError = this.state.errorMsg;
+    this.setState({errorMsg: keep ? currentError || error : error});
+  }
+
+  reloadCategories() {
+    getCategories(
+      (data) => this.setState({categories: data}),
+      (e) => this.handleError(e, true)
+    );
+  }
+
   handleSubmit(event) {
     event.preventDefault();
   }
 
   handleAddCategory(category) {
-    const categories = this.state.categories;
-    this.setState({
-      categories: categories.concat([category]),
-    });
+    addCategory(category, (e) => this.handleError(e))
+      .then(() => this.reloadCategories());
   }
 
   handleEditCategory(oldCategory, newCategory) {
-    const categories = this.state.categories;
-    this.setState({
-      categories: categories.map(c => c === oldCategory ? newCategory : c)
-    });
+    editCategory(oldCategory, newCategory, (e) => this.handleError(e))
+      .then(() => this.reloadCategories());
   }
 
   handleDeleteCategory(category, migrateTo) {
-    const categories = this.state.categories;
-    this.setState({
-      categories : categories.filter(c => c !== category)
-    });
+    removeCategory(category, migrateTo, (e) => this.handleError(e))
+      .then(() => this.reloadCategories());
   }
 
   render() {
     const categories = this.state.categories;
+    const errorMsg = this.state.errorMsg;
     const renderedCategories = categories.map((category) => {
       return (
         <ViewEditCategory key={category}
@@ -246,6 +246,11 @@ class Categories extends React.Component {
     return (
       <div className="container-md">
         <form onSubmit={(e) => this.handleSubmit(e)}>
+          {errorMsg &&
+            <div className="alert alert-danger my-2" role="alert">
+              {errorMsg}
+            </div>
+          }
           {renderedCategories}
           <AddCategory onAdd={(e) => this.handleAddCategory(e)}/>
         </form>
