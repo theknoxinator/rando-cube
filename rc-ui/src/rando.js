@@ -1,22 +1,14 @@
 import React from 'react';
 import {getCategories} from './backend';
+import {SelectSingleField} from './fields/single-fields';
+import Items from './items';
 
-function SelectCategoryField(props) {
-  const categories = props.categories.map((category) => {
+class Randomizer extends React.Component {
+  render() {
     return (
-      <option key={category} value={category}>{category}</option>
+      <div/>
     );
-  });
-  return (
-    <div className="row my-2">
-      <div className="col">
-        <select className="form-select" aria-label="Select Category" onChange={props.onChange}>
-          <option value="">Select Category</option>
-          {categories}
-        </select>
-      </div>
-    </div>
-  );
+  }
 }
 
 class Rando extends React.Component {
@@ -42,6 +34,14 @@ class Rando extends React.Component {
     );
   }
 
+  getCategoryOptions() {
+    const categories = this.state.categories;
+    var options = [{value: '', text: 'Select Category'}];
+    return options.concat(categories.map((category) => {
+      return {value: category, text: category}
+    }));
+  }
+
   handleSubmit(event) {
     event.preventDefault();
   }
@@ -52,6 +52,7 @@ class Rando extends React.Component {
 
   render() {
     const categories = this.state.categories;
+    const active = this.state.active;
     const errorMsg = this.state.errorMsg;
     return (
       <div className="container-md">
@@ -61,8 +62,11 @@ class Rando extends React.Component {
               {errorMsg}
             </div>
           }
-          <SelectCategoryField categories={categories}
-                               onChange={(e) => this.handleCategorySelect(e)} />
+          <SelectSingleField options={this.getCategoryOptions()}
+                             onChange={(e) => this.handleCategorySelect(e)} />
+          <Randomizer />
+          <Items category={active}
+                 onError={(e) => this.handleError(e)} />
         </form>
       </div>
     );

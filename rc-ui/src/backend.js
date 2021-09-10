@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:8080';
+const baseUrl = 'http://192.168.1.192:8080';
 
 export async function getCategories(handleResult, handleError) {
   return fetch(baseUrl + '/getCategories')
@@ -43,4 +43,13 @@ export async function removeCategory(category, migrateTo, handleError) {
     body: JSON.stringify(request)
   }).then(response => response.json())
     .then(result => handleError(result.error));
+}
+
+export async function getFullList(category, handleResult, handleError) {
+  return fetch(baseUrl + '/getFullList?category=' + category)
+    .then(response => response.json())
+    .then(result => {
+      handleResult(result.items);
+      handleError(result.error);
+    });
 }
