@@ -53,3 +53,12 @@ export async function getFullList(category, handleResult, handleError) {
       handleError(result.error);
     });
 }
+
+export async function getCompletedList(category, handleResult, handleError) {
+  return fetch(baseUrl + '/getCompletedList?category=' + category)
+    .then(response => response.json())
+    .then(result => {
+      handleResult(result.items);
+      handleError(result.error);
+    });
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {getCategories} from './backend';
+import {getCategories, getFullList, getCompletedList} from './backend';
 import {SelectSingleField} from './fields/single-fields';
 import Items from './items';
 
@@ -16,10 +16,14 @@ class Rando extends React.Component {
     super(props);
     this.state = {
       categories: [],
+      activeItems: [],
+      completedItems: [],
       active: '',
       errorMsg: null,
     }
     this.reloadCategories();
+    this.reloadActiveItems(this.state.active);
+    this.reloadCompletedItems(this.state.active);
   }
 
   handleError(error, keep=false) {
@@ -30,6 +34,20 @@ class Rando extends React.Component {
   reloadCategories() {
     getCategories(
       (data) => this.setState({categories: data}),
+      (e) => this.handleError(e, true)
+    );
+  }
+
+  reloadActiveItems(category) {
+    getFullList(category,
+      (data) => this.setState({activeItems: data}),
+      (e) => this.handleError(e, true)
+    );
+  }
+
+  reloadCompletedItems(category) {
+    getCompletedList(category,
+      (data) => this.setState({completedItems: data}),
       (e) => this.handleError(e, true)
     );
   }
@@ -47,12 +65,17 @@ class Rando extends React.Component {
   }
 
   handleCategorySelect(event) {
-    this.setState({active: event.target.value});
+    const category = event.target.value
+    this.setState({active: category});
+    this.reloadActiveItems(category);
+    this.reloadCompletedItems(category);
   }
 
   render() {
     const categories = this.state.categories;
     const active = this.state.active;
+    const activeItems = this.state.activeItems;
+    const completedItems = this.state.completedItems;
     const errorMsg = this.state.errorMsg;
     return (
       <div className="container-md">
@@ -65,7 +88,10 @@ class Rando extends React.Component {
           <SelectSingleField options={this.getCategoryOptions()}
                              onChange={(e) => this.handleCategorySelect(e)} />
           <Randomizer />
-          <Items category={active}
+          <Items activeCategory={active}
+                 categories={categories}
+                 activeItems={activeItems}
+                 completedItems={completedItems}
                  onError={(e) => this.handleError(e)} />
         </form>
       </div>

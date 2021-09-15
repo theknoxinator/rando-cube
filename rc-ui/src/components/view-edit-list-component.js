@@ -1,35 +1,29 @@
 import React from 'react';
-import {getFullList} from '../backend';
 import AddMultiComponent from './add-multi-component';
+import {ViewSingleField} from '../fields/single-fields';
 
 class ViewEditListComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      items: []
-    }
-    this.reloadItems(props.category);
   }
 
-  reloadItems(category) {
-    getFullList(category,
-      (data) => this.setState({items: data}),
-      (e) => this.props.onError(e)
-    );
+  handleAddItem(fields) {
+    console.log(fields);
   }
 
   render() {
-    const items = this.state.items;
-    const renderedItems = items.map((item) => {
+    const list = this.props.list;
+    const renderedList = list.map((item) => {
       return (
-        <div/>
+        <ViewSingleField key={item.id} value={item.title}/>
       );
     });
 
     return (
       <div>
-        {renderedItems}
-        <AddMultiComponent onAdd={(e) => this.handleAddItem(e)}/>
+        {renderedList}
+        <AddMultiComponent fields={this.props.fieldsForAdd}
+                           onAdd={(e) => this.handleAddItem(e)}/>
       </div>
     );
   }

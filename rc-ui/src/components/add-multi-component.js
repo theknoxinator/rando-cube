@@ -1,28 +1,37 @@
 import React from 'react';
 import {AddButton} from '../fields/common-fields';
-import {AddSingleField} from '../fields/single-fields';
+import {AddMultiField} from '../fields/multi-fields';
 
 class AddMultiComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
+      values: this.resetValues(props.fields),
       showField: false,
     }
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  resetValues(fields) {
+    return fields.reduce((map, obj) => {
+      map[obj.key] = obj.value;
+      return map;
+    }, {});
+  }
+
+  handleChange(key, event) {
+    const values = this.state.values;
+    values[key] = event.target.value;
+    this.setState({values: values});
   }
 
   handleClick(event) {
     const showField = this.state.showField;
     if (!showField) {
-      this.setState({showField: true, value: ''});
+      this.setState({showField: true, values: this.resetValues(this.props.fields)});
     } else {
-      const category = this.state.value;
-      this.props.onAdd(category);
-      this.setState({showField: false, value: ''});
+      const values = this.state.values;
+      this.props.onAdd(values);
+      this.setState({showField: false, values: this.resetValues(this.props.fields)});
     }
   }
 
@@ -32,11 +41,14 @@ class AddMultiComponent extends React.Component {
 
   render() {
     const showField = this.state.showField;
+    const fields = this.props.fields;
+    const values = this.state.values;
     if (showField) {
-      return <AddSingleField value={this.state.value}
-                             onSubmit={(e) => this.handleClick(e)}
-                             onChange={(e) => this.handleChange(e)}
-                             onCancel={(e) => this.handleCancel(e)} />
+      return <AddMultiField fields={fields}
+                            values={values}
+                            onSubmit={(e) => this.handleClick(e)}
+                            onChange={(k,e) => this.handleChange(k,e)}
+                            onCancel={(e) => this.handleCancel(e)} />
     } else {
       return <AddButton onClick={() => this.handleClick()} />
     }
