@@ -62,3 +62,27 @@ export async function getCompletedList(category, handleResult, handleError) {
       handleError(result.error);
     });
 }
+
+export async function saveItem(item, handleError) {
+  var request = {'item': item};
+  return fetch(baseUrl + '/saveItem', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(request)
+  }).then(response => response.json())
+    .then(result => handleError(result.error));
+}
+
+export async function removeItem(id, handleError) {
+  var request = {'id': id};
+  return fetch(baseUrl + '/removeItem', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(request)
+  }).then(response => response.json())
+    .then(result => handleError(result.error));
+}

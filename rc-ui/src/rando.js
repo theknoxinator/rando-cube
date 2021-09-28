@@ -1,5 +1,5 @@
 import React from 'react';
-import {getCategories, getFullList, getCompletedList} from './backend';
+import {getCategories, getFullList, getCompletedList, saveItem, removeItem} from './backend';
 import {SelectSingleField} from './fields/single-fields';
 import Items from './items';
 
@@ -71,6 +71,21 @@ class Rando extends React.Component {
     this.reloadCompletedItems(category);
   }
 
+  handleAddItem(item) {
+    saveItem(item, (e) => this.handleError(e))
+      .then(() => this.reloadActiveItems(this.state.active));
+  }
+
+  handleDeleteItem(id) {
+    removeItem(id, (e) => this.handleError(e))
+      .then(() => this.reloadActiveItems(this.state.active));
+  }
+
+  handleEditItem(item) {
+    saveItem(item, (e) => this.handleError(e))
+      .then(() => this.reloadActiveItems(this.state.active));
+  }
+
   render() {
     const categories = this.state.categories;
     const active = this.state.active;
@@ -92,6 +107,9 @@ class Rando extends React.Component {
                  categories={categories}
                  activeItems={activeItems}
                  completedItems={completedItems}
+                 onAdd={(e) => this.handleAddItem(e)}
+                 onDelete={(e) => this.handleDeleteItem(e)}
+                 onEdit={(e) => this.handleEditItem(e)}
                  onError={(e) => this.handleError(e)} />
         </form>
       </div>

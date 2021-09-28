@@ -34,7 +34,7 @@ class ViewEditSingleComponent extends React.Component {
   }
 
   handleOptionChange(event) {
-    this.setState({migrateTo: event.target.value});
+    this.setState({deleteOption: event.target.value});
   }
 
   handleDeleteConfirm(event) {
