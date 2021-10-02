@@ -31,6 +31,7 @@ public class ItemManager {
 
     public ItemListResponse getRandomSet(final String category, final boolean useLast) {
         try {
+            log.info("GetRandomSet called with: " + category + ", " + useLast);
             final ItemListResponse response = getItemList(dataHandler.getData(), category);
             if (response.getError() != null) {
                 return response;

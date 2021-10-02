@@ -1,27 +1,22 @@
 import React from 'react';
-import {getCategories, getFullList, getCompletedList, saveItem, removeItem} from './backend';
+import {getCategories, getRandomSet, getFullList, getCompletedList, saveItem, removeItem, markCompleted} from './backend';
 import {SelectSingleField} from './fields/single-fields';
+import Randomizer from './randomizer';
 import Items from './items';
-
-class Randomizer extends React.Component {
-  render() {
-    return (
-      <div/>
-    );
-  }
-}
 
 class Rando extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       categories: [],
+      randomSet: [],
       activeItems: [],
       completedItems: [],
       active: '',
       errorMsg: null,
     }
     this.reloadCategories();
+    this.reloadRandomizer(this.state.active, true);
     this.reloadActiveItems(this.state.active);
     this.reloadCompletedItems(this.state.active);
   }
@@ -36,6 +31,17 @@ class Rando extends React.Component {
       (data) => this.setState({categories: data}),
       (e) => this.handleError(e, true)
     );
+  }
+
+  reloadRandomizer(category, useLast) {
+    if (category) {
+      getRandomSet(category, useLast,
+        (data) => this.setState({randomSet: data}),
+        (e) => this.handleError(e, true)
+      );
+    } else {
+      this.setState({randomSet: []});
+    }
   }
 
   reloadActiveItems(category) {
@@ -67,6 +73,7 @@ class Rando extends React.Component {
   handleCategorySelect(event) {
     const category = event.target.value
     this.setState({active: category});
+    this.reloadRandomizer(category, true);
     this.reloadActiveItems(category);
     this.reloadCompletedItems(category);
   }
@@ -78,7 +85,11 @@ class Rando extends React.Component {
 
   handleDeleteItem(id) {
     removeItem(id, (e) => this.handleError(e))
-      .then(() => this.reloadActiveItems(this.state.active));
+      .then(() => {
+        this.reloadRandomizer(this.state.active, true);
+        this.reloadActiveItems(this.state.active);
+        this.reloadCompletedItems(this.state.active);
+      });
   }
 
   handleEditItem(item) {
@@ -86,9 +97,31 @@ class Rando extends React.Component {
       .then(() => this.reloadActiveItems(this.state.active));
   }
 
+  handleMarkItem(id) {
+    markCompleted(id, false, (e) => this.handleError(e))
+      .then(() => {
+        this.reloadRandomizer(this.state.active, true);
+        this.reloadActiveItems(this.state.active);
+        this.reloadCompletedItems(this.state.active);
+      });
+  }
+
+  handleUnmarkItem(id) {
+    markCompleted(id, true, (e) => this.handleError(e))
+      .then(() => {
+        this.reloadActiveItems(this.state.active);
+        this.reloadCompletedItems(this.state.active);
+      });
+  }
+
+  handleNewRandomSet(useLast) {
+    this.reloadRandomizer(this.state.active, useLast);
+  }
+
   render() {
     const categories = this.state.categories;
     const active = this.state.active;
+    const randomSet = this.state.randomSet;
     const activeItems = this.state.activeItems;
     const completedItems = this.state.completedItems;
     const errorMsg = this.state.errorMsg;
@@ -102,7 +135,10 @@ class Rando extends React.Component {
           }
           <SelectSingleField options={this.getCategoryOptions()}
                              onChange={(e) => this.handleCategorySelect(e)} />
-          <Randomizer />
+          <Randomizer randomSet={randomSet}
+                      onRandomize={(e) => this.handleNewRandomSet(e)}
+                      onMark={(e) => this.handleMarkItem(e)}
+                      onDelete={(e) => this.handleDeleteItem(e)} />
           <Items activeCategory={active}
                  categories={categories}
                  activeItems={activeItems}
@@ -110,6 +146,7 @@ class Rando extends React.Component {
                  onAdd={(e) => this.handleAddItem(e)}
                  onDelete={(e) => this.handleDeleteItem(e)}
                  onEdit={(e) => this.handleEditItem(e)}
+                 onUnmark={(e) => this.handleUnmarkItem(e)}
                  onError={(e) => this.handleError(e)} />
         </form>
       </div>

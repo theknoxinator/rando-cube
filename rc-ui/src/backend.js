@@ -45,6 +45,15 @@ export async function removeCategory(category, migrateTo, handleError) {
     .then(result => handleError(result.error));
 }
 
+export async function getRandomSet(category, useLast, handleResult, handleError) {
+  return fetch(baseUrl + '/getRandomSet?category=' + category + '&useLast=' + useLast)
+    .then(response => response.json())
+    .then(result => {
+      handleResult(result.items);
+      handleError(result.error);
+    });
+}
+
 export async function getFullList(category, handleResult, handleError) {
   return fetch(baseUrl + '/getFullList?category=' + category)
     .then(response => response.json())
@@ -78,6 +87,18 @@ export async function saveItem(item, handleError) {
 export async function removeItem(id, handleError) {
   var request = {'id': id};
   return fetch(baseUrl + '/removeItem', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(request)
+  }).then(response => response.json())
+    .then(result => handleError(result.error));
+}
+
+export async function markCompleted(id, unmark, handleError) {
+  var request = {'id': id, 'unmark': unmark};
+  return fetch(baseUrl + '/markCompleted', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -1,5 +1,6 @@
 import React from 'react';
 import ViewEditListComponent from './components/view-edit-list-component';
+import ViewUnmarkListComponent from './components/view-unmark-list-component';
 
 class Items extends React.Component {
   constructor(props) {
@@ -38,6 +39,10 @@ class Items extends React.Component {
       priority: newValues['Priority'],
     };
     this.props.onEdit(item);
+  }
+
+  handleUnmarkItem(values) {
+    this.props.onUnmark(values['ID']);
   }
 
   handleDeleteItem(values, migrateTo) {
@@ -97,9 +102,12 @@ class Items extends React.Component {
                                             onDelete={(e,f) => this.handleDeleteItem(e,f)}
                                             onError={(e) => this.props.onError(e)} />
     } else if (this.state.showCompletedList) {
-      renderedList = <ViewEditListComponent list={completedItems}
-                                            fieldsForView={fieldsForCompletedView}
-                                            onError={(e) => this.props.onError(e)} />
+      renderedList = <ViewUnmarkListComponent list={completedItems}
+                                              fieldsForDelete={fieldsForCompletedView}
+                                              fieldsForView={fieldsForCompletedView}
+                                              onUnmark={(e) => this.handleUnmarkItem(e)}
+                                              onDelete={(e,f) => this.handleDeleteItem(e,f)}
+                                              onError={(e) => this.props.onError(e)} />
     } else {
       renderedList = <div/>
     }

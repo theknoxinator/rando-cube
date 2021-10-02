@@ -109,7 +109,7 @@ export function EditMultiField(props) {
   );
 }
 
-export function ViewMultiField(props) {
+export function MarkMultiField(props) {
   const values = props.fields.map((field) => {
     return (
       <div key={field} className="col my-1">
@@ -122,7 +122,28 @@ export function ViewMultiField(props) {
     <div className="row my-2">
       {values}
       <div className="col-4">
-        <button className="btn btn-primary mx-1" onClick={props.onEdit}><i className="bi-pencil"></i></button>
+        <button className="btn btn-outline-danger mx-1" onClick={props.onCancel}><i className="bi-x-square"></i></button>
+        <button className="btn btn-primary mx-1" onClick={props.onSubmit}><i className="bi-check-square"></i></button>
+      </div>
+    </div>
+  );
+}
+
+export function ViewMultiField(props) {
+  const values = props.fields.map((field) => {
+    return (
+      <div key={field} className="col my-1">
+        {props.values[field]}
+      </div>
+    );
+  });
+  const editIcon = props.editIcon ? props.editIcon : "bi-pencil";
+
+  return (
+    <div className="row my-2">
+      {values}
+      <div className="col-4">
+        <button className="btn btn-primary mx-1" onClick={props.onEdit}><i className={editIcon}></i></button>
         <button className="btn btn-danger mx-1" onClick={props.onDelete}><i className="bi-trash"></i></button>
       </div>
     </div>

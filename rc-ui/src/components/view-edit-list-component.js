@@ -28,7 +28,7 @@ class ViewEditListComponent extends React.Component {
         {renderedList}
         {this.props.fieldsForAdd &&
           <AddMultiComponent fields={this.props.fieldsForAdd}
-                             onAdd={(e) => this.props.onAdd(e)}/>
+                             onAdd={(e) => this.props.onAdd(e)} />
         }
       </div>
     );
